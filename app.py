@@ -74,7 +74,7 @@ with st.sidebar:
     password = st.text_input("Digite a senha para editar", type="password")
     
     # Definimos a sua senha secreta aqui (TROQUE 'tibia123' pela sua)
-    SENHA_CORRETA = st.secrets["admin_password"]
+    SENHA_CORRETA = "tibia123"
 
     if password == SENHA_CORRETA:
         st.success("Acesso liberado!")
@@ -227,5 +227,6 @@ with tab4:
         # Tabela completa pesquisável
         st.dataframe(df, use_container_width=True)
         
+
 
 
