@@ -8,7 +8,7 @@ from datetime import datetime
 st.set_page_config(page_title="Tibia Tracker MS Cloud", layout="wide")
 
 # URL da sua planilha
-SHEET_URL = "SUA_URL_DO_GOOGLE_SHEETS_AQUI" 
+SHEET_URL = "https://docs.google.com/spreadsheets/d/12vyHyK2hY_kZnHXGYYcqAQOINb_RRB-ibsVF3-E-s3I/edit?usp=sharing" 
 
 # --- FUNÇÃO: CALCULAR XP TOTAL ---
 def xp_for_level(level):
@@ -108,3 +108,4 @@ if not df.empty and "Level" in df.columns:
     st.dataframe(df.sort_index(ascending=False))
 else:
     st.info("Conectado! Adicione sua primeira hunt na barra lateral.")
+
