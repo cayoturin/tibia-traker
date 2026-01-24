@@ -66,24 +66,36 @@ def save_hunt(log_text, location, level):
 df = load_data()
 current_lvl = int(df["Level"].max()) if not df.empty and "Level" in df.columns else 157
 
-# --- SIDEBAR (INPUT) ---
+# --- SIDEBAR (INPUT COM SENHA) ---
 with st.sidebar:
-    st.header("📝 Nova Sessão")
-    in_lvl = st.number_input("Level", value=current_lvl)
-    in_loc = st.text_input("Local", "Lava Lurkers")
-    in_log = st.text_area("Log do Analyser")
+    st.header("🔐 Área Restrita")
     
-    if st.button("💾 Salvar Hunt", type="primary"):
-        row = save_hunt(in_log, in_loc, in_lvl)
-        if row:
-            df_new = pd.DataFrame([row], columns=["Data", "Level", "Local", "Tempo (min)", "XP Total", "XP/h Real", "Lucro", "Supplies"])
-            updated_df = pd.concat([df, df_new], ignore_index=True)
-            conn.update(spreadsheet=SHEET_URL, data=updated_df)
-            st.success("Salvo!")
-            st.rerun()
-            
-    st.markdown("---")
-    st.info("💡 Dica: Use o zoom nos gráficos para ver detalhes de datas específicas.")
+    # Campo de senha
+    password = st.text_input("Digite a senha para editar", type="password")
+    
+    # Definimos a sua senha secreta aqui (TROQUE 'tibia123' pela sua)
+    SENHA_CORRETA = st.secrets["admin_password"]
+
+    if password == SENHA_CORRETA:
+        st.success("Acesso liberado!")
+        st.markdown("---")
+        st.header("📝 Nova Sessão")
+        in_lvl = st.number_input("Level", value=current_lvl)
+        in_loc = st.text_input("Local", "Lava Lurkers")
+        in_log = st.text_area("Log do Analyser")
+        
+        if st.button("💾 Salvar Hunt", type="primary"):
+            row = save_hunt(in_log, in_loc, in_lvl)
+            if row:
+                df_new = pd.DataFrame([row], columns=["Data", "Level", "Local", "Tempo (min)", "XP Total", "XP/h Real", "Lucro", "Supplies"])
+                updated_df = pd.concat([df, df_new], ignore_index=True)
+                conn.update(spreadsheet=SHEET_URL, data=updated_df)
+                st.success("Salvo com sucesso!")
+                st.rerun()
+    elif password == "":
+        st.info("Insira a senha para habilitar o envio de dados.")
+    else:
+        st.error("Senha incorreta. Apenas visualização permitida.")
 
 # --- TÍTULO E ABAS ---
 st.title(f"🧙‍♂️ MS Level {current_lvl} - Analytics")
@@ -215,4 +227,5 @@ with tab4:
         # Tabela completa pesquisável
         st.dataframe(df, use_container_width=True)
         
+
 
