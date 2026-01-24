@@ -7,8 +7,8 @@ from datetime import datetime
 # --- CONFIGURAÇÕES ---
 st.set_page_config(page_title="Tibia Tracker MS Cloud", layout="wide")
 
-# URL da sua planilha (substitua pela sua após criar)
-SHEET_URL = "https://docs.google.com/spreadsheets/d/12vyHyK2hY_kZnHXGYYcqAQOINb_RRB-ibsVF3-E-s3I/edit?usp=sharing"
+# URL da sua planilha
+SHEET_URL = "SUA_URL_DO_GOOGLE_SHEETS_AQUI" 
 
 # --- FUNÇÃO: CALCULAR XP TOTAL ---
 def xp_for_level(level):
@@ -18,7 +18,16 @@ def xp_for_level(level):
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 def load_data():
-    return conn.read(spreadsheet=SHEET_URL, ttl="0") # ttl=0 evita cache para ver dados na hora
+    try:
+        data = conn.read(spreadsheet=SHEET_URL, ttl=0)
+        # Verifica se as colunas essenciais existem, senão retorna DF vazio estruturado
+        required_columns = ["Data", "Level", "Local", "Tempo (min)", "XP Total", "XP/h Real", "Lucro", "Supplies"]
+        if data.empty or not set(required_columns).issubset(data.columns):
+            return pd.DataFrame(columns=required_columns)
+        return data
+    except Exception:
+        # Se der erro de conexão ou planilha vazia, retorna DF vazio para não quebrar o site
+        return pd.DataFrame(columns=["Data", "Level", "Local", "Tempo (min)", "XP Total", "XP/h Real", "Lucro", "Supplies"])
 
 # --- FUNÇÃO: PARSEAR LOG ---
 def parse_log(log_text, location, current_level):
@@ -57,35 +66,45 @@ def parse_log(log_text, location, current_level):
 # --- INTERFACE ---
 st.title("🧙‍♂️ MS Tracker Cloud")
 
-# Carregar dados existentes
+# Carregar dados (agora blindado contra erros)
 df = load_data()
+
+# Garantir que input_level tenha um valor padrão seguro
+last_level = 157
+if not df.empty and "Level" in df.columns:
+    try:
+        last_level = int(df["Level"].max())
+    except:
+        pass
 
 # Sidebar para Inputs
 st.sidebar.header("📝 Nova Hunt")
-input_level = st.sidebar.number_input("Level Atual", value=int(df["Level"].max()) if not df.empty else 157)
+input_level = st.sidebar.number_input("Level Atual", value=last_level)
 input_local = st.sidebar.text_input("Local", "Lava Lurkers")
 input_log = st.sidebar.text_area("Cole o Log:")
 
 if st.sidebar.button("Enviar para Nuvem"):
     new_row = parse_log(input_log, input_local, input_level)
     if new_row:
-        # Adiciona a nova linha ao DataFrame e atualiza a planilha
-        updated_df = pd.concat([df, pd.DataFrame([new_row], columns=df.columns)], ignore_index=True)
+        # Adiciona a nova linha e atualiza a planilha
+        new_df = pd.DataFrame([new_row], columns=["Data", "Level", "Local", "Tempo (min)", "XP Total", "XP/h Real", "Lucro", "Supplies"])
+        updated_df = pd.concat([df, new_df], ignore_index=True)
         conn.update(spreadsheet=SHEET_URL, data=updated_df)
         st.sidebar.success("Dados salvos no Google Sheets!")
         st.rerun()
 
-# --- DASHBOARD (Mesma lógica anterior, mas usando o df da nuvem) ---
-if not df.empty:
+# --- DASHBOARD ---
+if not df.empty and "Level" in df.columns:
     xp_faltante_400 = xp_for_level(400) - xp_for_level(input_level)
     
     col1, col2 = st.columns(2)
     col1.metric("XP Total", f"{xp_for_level(input_level):,}")
     col2.metric("XP para o 400", f"{xp_faltante_400:,}")
     
-    st.progress(xp_for_level(input_level) / xp_for_level(400))
+    progresso = xp_for_level(input_level) / xp_for_level(400)
+    st.progress(min(progresso, 1.0))
     
     st.subheader("Histórico Online")
     st.dataframe(df.sort_index(ascending=False))
 else:
-    st.info("Conectado ao Google Sheets. Adicione sua primeira hunt!")
+    st.info("Conectado! Adicione sua primeira hunt na barra lateral.")
