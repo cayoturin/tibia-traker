@@ -245,7 +245,7 @@ with tab5:
     col_i1, col_i2 = st.columns(2)
     
    # 1. Configuração das Receitas (Dicionário com nomes e quantidades exatas)
-recipes = {
+    recipes = {
     "⚔️ Critical (Powerful Strike)": {
         "items": ["Protective Charm", "Sabretooth", "Vexclaw Talon"],
         "qtys": [20, 25, 5],
@@ -347,6 +347,7 @@ with tab6:
         prog = len(concluidos) / len(monstros_da_cat)
         st.progress(prog)
         st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
