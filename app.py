@@ -245,7 +245,7 @@ with tab5:
         <div style="display: flex; align-items: center; gap: 15px;">
             <img src="https://raw.githubusercontent.com/cayoturin/tibia-traker/main/Imbuing_Shrine.gif" width="60">
             <h2 style="margin: 0;">Calculadora de Imbuements</h2>
-        </div>">
+        </div>
     """, unsafe_allow_html=True)
     col_i1, col_i2 = st.columns(2)
     
@@ -352,6 +352,7 @@ with tab6:
         prog = len(concluidos) / len(monstros_da_cat)
         st.progress(prog)
         st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
