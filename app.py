@@ -244,29 +244,82 @@ with tab5:
     st.subheader("💰 Calculadora de Custo/Benefício")
     col_i1, col_i2 = st.columns(2)
     
+   # 1. Configuração das Receitas (Dicionário com nomes e quantidades exatas)
+recipes = {
+    "⚔️ Critical (Powerful Strike)": {
+        "items": ["Protective Charm", "Sabretooth", "Vexclaw Talon"],
+        "qtys": [20, 25, 5],
+        "icon": "https://www.tibiawiki.com.br/images/d/dd/Imbuement_Icon_Critical_Hit.png" # Exemplo
+    },
+    "✨ Mana Leech (Powerful Void)": {
+        "items": ["Rope Belt", "Silencer Claws", "Some Grimeleech Wings"],
+        "qtys": [25, 25, 5],
+        "icon": "https://www.tibiawiki.com.br/images/8/82/Imbuement_Icon_Mana_Leech.png"
+    },
+    "❤️ Life Leech (Powerful Vampirism)": {
+        "items": ["Vampire Teeth", "Bloody Pincers", "Piece of Dead Brain"],
+        "qtys": [25, 15, 5],
+        "icon": "https://www.tibiawiki.com.br/images/5/50/Imbuement_Icon_Life_Leech.png"
+    },
+    "🛡️ Magic Level (Powerful Epiphany)": {
+        "items": ["Elvish Talisman", "Broken Shamanic Staff", "Strand of Medusa Hair"],
+        "qtys": [25, 15, 5],
+        "icon": "https://www.tibiawiki.com.br/images/e/ed/Imbuement_Icon_Magic_Level.png"
+    }
+}
+
+    # 2. Seletor de Tipo
+    selected_imbue = st.selectbox("Selecione o Imbuement:", list(recipes.keys()))
+    dados = recipes[selected_imbue]
+
+
     with col_i1:
-        st.write("**Preços do Market**")
-        token_price = st.number_input("Preço da Gold Token", value=45000)
+        st.markdown(f"### Requisitos: {selected_imbue}")
+        
+        # Inputs Dinâmicos (Mudam o nome conforme a seleção)
+        st.write("**Preços Unitários (Market):**")
+        
+        # Item 1
+        price1 = st.number_input(f"💰 Preço: {dados['items'][0]} ({dados['qtys'][0]}x)", value=2000, step=100)
+        # Item 2
+        price2 = st.number_input(f"💰 Preço: {dados['items'][1]} ({dados['qtys'][1]}x)", value=2000, step=100)
+        # Item 3
+        price3 = st.number_input(f"💰 Preço: {dados['items'][2]} ({dados['qtys'][2]}x)", value=10000, step=100)
+        
         st.markdown("---")
-        st.write("Exemplo: Powerful Strike (Crit)")
-        item1 = st.number_input("Protective Charm (20x)", value=2500)
-        item2 = st.number_input("Sabretooth (25x)", value=6000)
-        item3 = st.number_input("Vexclaw Talon (5x)", value=2000)
-        taxa = 300000 # Taxa de criação do Powerful
+        token_price = st.number_input("🥇 Preço do Gold Token", value=40000, step=500)
+        taxa_gold = 150000 # Taxa padrão de 100% de chance para Tier 3
     
     with col_i2:
-        custo_itens = (item1 * 20) + (item2 * 25) + (item3 * 5) + taxa
-        custo_tokens = (token_price * 6) + taxa # 6 tokens para Powerful
+        # Cálculos Matemáticos
+        total_market = (price1 * dados['qtys'][0]) + (price2 * dados['qtys'][1]) + (price3 * dados['qtys'][2]) + taxa_gold
+        total_tokens = (token_price * 6) + taxa_gold # Sempre são 6 tokens para Powerful
         
-        st.write("**Comparativo (20 horas)**")
-        st.metric("Custo com Itens", f"{custo_itens:,} gp")
-        st.metric("Custo com Tokens", f"{custo_tokens:,} gp")
+        # Exibição dos Resultados
+        st.info(f"📊 **Análise de Custos (20h)**")
         
-        melhor_opcao = "ITENS" if custo_itens < custo_tokens else "GOLD TOKENS"
-        st.success(f"🏆 Melhor opção: **{melhor_opcao}**")
+        col_res1, col_res2 = st.columns(2)
+        with col_res1:
+            st.metric("Comprando Itens", f"{total_market:,.0f} gp")
+        with col_res2:
+            st.metric("Usando Tokens", f"{total_tokens:,.0f} gp", delta=f"{total_tokens - total_market:,.0f} diff")
         
-        custo_hora = min(custo_itens, custo_tokens) / 20
-        st.metric("🔥 Impacto na Hunt", f"{custo_hora:,.0f} gp/h", help="Subtraia isso do seu lucro por hora")
+        # Veredito
+        if total_market < total_tokens:
+            economiza = total_tokens - total_market
+            st.success(f"✅ **COMPRE OS ITENS!** Você economiza {economiza:,.0f} gp.")
+            custo_final = total_market
+        else:
+            economiza = total_market - total_tokens
+            st.warning(f"⚠️ **USE GOLD TOKENS!** Os itens estão caros demais (Economia: {economiza:,.0f} gp).")
+            custo_final = total_tokens
+    
+        st.markdown("---")
+        # Custo por Hora (O dado mais importante para o MS)
+        custo_hora = custo_final / 20
+        st.metric("🔥 Custo Real por Hora", f"{custo_hora:,.0f} gp/h", 
+                  help="Esse é o valor que você deve subtrair do lucro da hunt para saber se valeu a pena.")
+
 
 # --- ABA 6: RASTREADOR DE BESTIARY ---
 with tab6:
@@ -294,6 +347,7 @@ with tab6:
         prog = len(concluidos) / len(monstros_da_cat)
         st.progress(prog)
         st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
