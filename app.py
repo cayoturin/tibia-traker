@@ -104,6 +104,19 @@ st.title(f"🧙‍♂️ MS Level {current_lvl} - Analytics")
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Visão Geral", "📈 Evolução (Time Series)", "⚔️ Comparativo de Hunts", "🏆 Hall of Fame"])
 
 # --- ABA 1: VISÃO GERAL (RESUMO) ---
+# --- Dentro da Tab 1 (HOME) ---
+if not df.empty:
+    st.subheader("🚀 Evolução do Personagem")
+    # Gráfico de área para dar peso visual ao crescimento
+    fig_evolucao = px.area(df, x="Data", y="Level", 
+                          title="Crescimento ao Longo do Tempo",
+                          labels={'Level': 'Nível', 'Data': 'Data da Hunt'},
+                          color_discrete_sequence=['#00CC96']) # Verde MS
+    
+    # Ajuste para o gráfico ficar limpo
+    fig_evolucao.update_layout(xaxis_rangeslider_visible=False, showlegend=False)
+    st.plotly_chart(fig_evolucao, use_container_width=True)
+
 with tab1:
     if not df.empty:
         # KPI Cards
@@ -227,8 +240,50 @@ with tab4:
         # Tabela completa pesquisável
         st.dataframe(df, use_container_width=True)
         
+# --- ABA 5: CALCULADORA DE IMBUEMENTS ---
 
+st.subheader("💰 Calculadora de Custo/Benefício")
+col_i1, col_i2 = st.columns(2)
 
+with col_i1:
+    st.write("**Preços do Market**")
+    token_price = st.number_input("Preço da Gold Token", value=45000)
+    st.markdown("---")
+    st.write("Exemplo: Powerful Strike (Crit)")
+    item1 = st.number_input("Protective Charm (20x)", value=2500)
+    item2 = st.number_input("Sabretooth (25x)", value=6000)
+    item3 = st.number_input("Vexclaw Talon (5x)", value=2000)
+    taxa = 300000 # Taxa de criação do Powerful
+
+with col_i2:
+    custo_itens = (item1 * 20) + (item2 * 25) + (item3 * 5) + taxa
+    custo_tokens = (token_price * 6) + taxa # 6 tokens para Powerful
+    
+    st.write("**Comparativo (20 horas)**")
+    st.metric("Custo com Itens", f"{custo_itens:,} gp")
+    st.metric("Custo com Tokens", f"{custo_tokens:,} gp")
+    
+    melhor_opcao = "ITENS" if custo_itens < custo_tokens else "GOLD TOKENS"
+    st.success(f"🏆 Melhor opção: **{melhor_opcao}**")
+    
+    custo_hora = min(custo_itens, custo_tokens) / 20
+    st.metric("🔥 Impacto na Hunt", f"{custo_hora:,.0f} gp/h", help="Subtraia isso do seu lucro por hora")
+
+# --- ABA 6: RASTREADOR DE BESTIARY ---
+
+st.subheader("👾 Checkpoint de Charms")
+lista_monstros = ["Lava Lurker", "Exotic Spider", "Exotic Bat", "Pirate Skeleton", "Gazer Spectre", "Burster Spectre"]
+
+# Isso cria uma lista de seleção
+concluidos = st.multiselect("Marque os monstros que já completou o Bestiário:", lista_monstros)
+
+# Barra de progresso visual
+if lista_monstros:
+    porcentagem = len(concluidos) / len(lista_monstros)
+    st.write(f"Você completou {len(concluidos)} de {len(lista_monstros)} monstros selecionados.")
+    st.progress(porcentagem)
+
+st.info("💡 Lembre-se: Como MS, foque em completar bestiários de criaturas que morrem rápido para runas de área.")
 
 
 
