@@ -9,7 +9,7 @@ from datetime import datetime
 st.set_page_config(page_title="MS Analytics Pro", layout="wide", page_icon="🧙‍♂️")
 
 # URL DA PLANILHA (Mantenha a sua URL aqui)
-SHEET_URL = "https://docs.google.com/spreadsheets/d/12vyHyK2hY_kZnHXGYYcqAQOINb_RRB-ibsVF3-E-s3I/edit?usp=sharing"
+SHEET_URL = "https://docs.google.com/spreadsheets/d/1QPOI0BRolnICnLu7hDKz5WrtiqNLlq7-CkuPdiaMkv4/edit?usp=sharing"
 
 # --- FUNÇÕES UTILITÁRIAS ---
 def xp_for_level(level):
@@ -227,6 +227,7 @@ with tab4:
         # Tabela completa pesquisável
         st.dataframe(df, use_container_width=True)
         
+
 
 
 
