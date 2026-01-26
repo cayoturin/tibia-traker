@@ -101,7 +101,7 @@ with st.sidebar:
 st.title(f"🧙‍♂️ MS Level {current_lvl} - Analytics")
 
 # Criando "Páginas" usando Abas
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Visão Geral", "📈 Evolução (Time Series)", "⚔️ Comparativo de Hunts", "🏆 Hall of Fame", "Calculadora de Imbuemenst", "Bestiary Progress"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Visão Geral", "📈 Evolução (Time Series)", "⚔️ Comparativo de Hunts", "🏆 Hall of Fame", "💎 Calculadora de Imbuemenst", "📜 Bestiary Progress"])
 
 # --- ABA 1: VISÃO GERAL (RESUMO) ---
 with tab1:
@@ -347,6 +347,7 @@ with tab6:
         prog = len(concluidos) / len(monstros_da_cat)
         st.progress(prog)
         st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
