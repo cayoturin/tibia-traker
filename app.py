@@ -281,7 +281,7 @@ def load_bestiary():
 
 bestiario = load_bestiary()
 
-st.header("📜 Bestiário 798")
+st.header("📜 Bestiários Completos")
 
 # Escolha da Categoria
 cat = st.selectbox("Filtrar por Categoria", list(bestiario.keys()))
@@ -295,6 +295,7 @@ if monstros_da_cat:
     prog = len(concluidos) / len(monstros_da_cat)
     st.progress(prog)
     st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
