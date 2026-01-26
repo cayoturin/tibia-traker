@@ -101,7 +101,7 @@ with st.sidebar:
 st.title(f"🧙‍♂️ MS Level {current_lvl} - Analytics")
 
 # Criando "Páginas" usando Abas
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Visão Geral", "📈 Evolução (Time Series)", "⚔️ Comparativo de Hunts", "🏆 Hall of Fame"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Visão Geral", "📈 Evolução (Time Series)", "⚔️ Comparativo de Hunts", "🏆 Hall of Fame", "Calculadora de Imbuemenst", "Bestiary Progress"])
 
 # --- ABA 1: VISÃO GERAL (RESUMO) ---
 with tab1:
@@ -240,33 +240,33 @@ with tab4:
         st.dataframe(df, use_container_width=True)
         
 # --- ABA 5: CALCULADORA DE IMBUEMENTS ---
-
-st.subheader("💰 Calculadora de Custo/Benefício")
-col_i1, col_i2 = st.columns(2)
-
-with col_i1:
-    st.write("**Preços do Market**")
-    token_price = st.number_input("Preço da Gold Token", value=45000)
-    st.markdown("---")
-    st.write("Exemplo: Powerful Strike (Crit)")
-    item1 = st.number_input("Protective Charm (20x)", value=2500)
-    item2 = st.number_input("Sabretooth (25x)", value=6000)
-    item3 = st.number_input("Vexclaw Talon (5x)", value=2000)
-    taxa = 300000 # Taxa de criação do Powerful
-
-with col_i2:
-    custo_itens = (item1 * 20) + (item2 * 25) + (item3 * 5) + taxa
-    custo_tokens = (token_price * 6) + taxa # 6 tokens para Powerful
+with tab5:
+    st.subheader("💰 Calculadora de Custo/Benefício")
+    col_i1, col_i2 = st.columns(2)
     
-    st.write("**Comparativo (20 horas)**")
-    st.metric("Custo com Itens", f"{custo_itens:,} gp")
-    st.metric("Custo com Tokens", f"{custo_tokens:,} gp")
+    with col_i1:
+        st.write("**Preços do Market**")
+        token_price = st.number_input("Preço da Gold Token", value=45000)
+        st.markdown("---")
+        st.write("Exemplo: Powerful Strike (Crit)")
+        item1 = st.number_input("Protective Charm (20x)", value=2500)
+        item2 = st.number_input("Sabretooth (25x)", value=6000)
+        item3 = st.number_input("Vexclaw Talon (5x)", value=2000)
+        taxa = 300000 # Taxa de criação do Powerful
     
-    melhor_opcao = "ITENS" if custo_itens < custo_tokens else "GOLD TOKENS"
-    st.success(f"🏆 Melhor opção: **{melhor_opcao}**")
-    
-    custo_hora = min(custo_itens, custo_tokens) / 20
-    st.metric("🔥 Impacto na Hunt", f"{custo_hora:,.0f} gp/h", help="Subtraia isso do seu lucro por hora")
+    with col_i2:
+        custo_itens = (item1 * 20) + (item2 * 25) + (item3 * 5) + taxa
+        custo_tokens = (token_price * 6) + taxa # 6 tokens para Powerful
+        
+        st.write("**Comparativo (20 horas)**")
+        st.metric("Custo com Itens", f"{custo_itens:,} gp")
+        st.metric("Custo com Tokens", f"{custo_tokens:,} gp")
+        
+        melhor_opcao = "ITENS" if custo_itens < custo_tokens else "GOLD TOKENS"
+        st.success(f"🏆 Melhor opção: **{melhor_opcao}**")
+        
+        custo_hora = min(custo_itens, custo_tokens) / 20
+        st.metric("🔥 Impacto na Hunt", f"{custo_hora:,.0f} gp/h", help="Subtraia isso do seu lucro por hora")
 
 # --- ABA 6: RASTREADOR DE BESTIARY ---
 
@@ -294,6 +294,7 @@ if monstros_da_cat:
     prog = len(concluidos) / len(monstros_da_cat)
     st.progress(prog)
     st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
