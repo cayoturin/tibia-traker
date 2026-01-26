@@ -293,7 +293,7 @@ with tab5:
         
         st.markdown("---")
         token_price = st.number_input("🥇 Preço do Gold Token", value=40000, step=500)
-        taxa_gold = 150000 # Taxa padrão de 100% de chance para Tier 3
+        taxa_gold = 250000 # Taxa padrão de 100% de chance para Tier 3
     
     with col_i2:
         # Cálculos Matemáticos
@@ -352,6 +352,7 @@ with tab6:
         prog = len(concluidos) / len(monstros_da_cat)
         st.progress(prog)
         st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
