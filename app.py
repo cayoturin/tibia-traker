@@ -271,19 +271,31 @@ with col_i2:
 
 # --- ABA 6: RASTREADOR DE BESTIARY ---
 
-st.subheader("👾 Checkpoint de Charms")
-lista_monstros = ["Lava Lurker", "Exotic Spider", "Exotic Bat", "Pirate Skeleton", "Gazer Spectre", "Burster Spectre"]
+import streamlit as st
+import json
 
-# Isso cria uma lista de seleção
-concluidos = st.multiselect("Marque os monstros que já completou o Bestiário:", lista_monstros)
+# Função para carregar o arquivo
+def load_bestiary():
+    with open('bestiary.json', 'r', encoding='utf-8') as f:
+        return json.load(f)
 
-# Barra de progresso visual
-if lista_monstros:
-    porcentagem = len(concluidos) / len(lista_monstros)
-    st.write(f"Você completou {len(concluidos)} de {len(lista_monstros)} monstros selecionados.")
-    st.progress(porcentagem)
+bestiario = load_bestiary()
 
-st.info("💡 Lembre-se: Como MS, foque em completar bestiários de criaturas que morrem rápido para runas de área.")
+st.header("📜 Bestiário 798")
+
+# Escolha da Categoria
+cat = st.selectbox("Filtrar por Categoria", list(bestiario.keys()))
+
+# Multiselect com os monstros da categoria
+monstros_da_cat = bestiario[cat]
+concluidos = st.multiselect(f"Monstros de {cat} concluídos:", monstros_da_cat)
+
+# Barra de progresso da categoria
+if monstros_da_cat:
+    prog = len(concluidos) / len(monstros_da_cat)
+    st.progress(prog)
+    st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
