@@ -241,7 +241,13 @@ with tab4:
         
 # --- ABA 5: CALCULADORA DE IMBUEMENTS ---
 with tab5:
-    st.subheader("💰 Calculadora de Custo/Benefício")
+    st.markdown("""
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="https://raw.githubusercontent.com/cayoturin/tibia-traker/main/Imbuing_Shrine.gif" width="60">
+            <h2 style="margin: 0;">Calculadora de Imbuements</h2>
+        </div>
+        <hr style="margin-top: 5px; margin-bottom: 20px;">
+    """, unsafe_allow_html=True)
     col_i1, col_i2 = st.columns(2)
     
    # 1. Configuração das Receitas (Dicionário com nomes e quantidades exatas)
@@ -347,6 +353,7 @@ with tab6:
         prog = len(concluidos) / len(monstros_da_cat)
         st.progress(prog)
         st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
