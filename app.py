@@ -104,20 +104,20 @@ st.title(f"🧙‍♂️ MS Level {current_lvl} - Analytics")
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Visão Geral", "📈 Evolução (Time Series)", "⚔️ Comparativo de Hunts", "🏆 Hall of Fame"])
 
 # --- ABA 1: VISÃO GERAL (RESUMO) ---
-# --- Dentro da Tab 1 (HOME) ---
-if not df.empty:
-    st.subheader("🚀 Evolução do Personagem")
-    # Gráfico de área para dar peso visual ao crescimento
-    fig_evolucao = px.area(df, x="Data", y="Level", 
-                          title="Crescimento ao Longo do Tempo",
-                          labels={'Level': 'Nível', 'Data': 'Data da Hunt'},
-                          color_discrete_sequence=['#00CC96']) # Verde MS
-    
-    # Ajuste para o gráfico ficar limpo
-    fig_evolucao.update_layout(xaxis_rangeslider_visible=False, showlegend=False)
-    st.plotly_chart(fig_evolucao, use_container_width=True)
-
 with tab1:
+    # --- Dentro da Tab 1 (HOME) ---
+    if not df.empty:
+        st.subheader("🚀 Evolução do Personagem")
+        # Gráfico de área para dar peso visual ao crescimento
+        fig_evolucao = px.area(df, x="Data", y="Level", 
+                              title="Crescimento ao Longo do Tempo",
+                              labels={'Level': 'Nível', 'Data': 'Data da Hunt'},
+                              color_discrete_sequence=['#00CC96']) # Verde MS
+        
+        # Ajuste para o gráfico ficar limpo
+        fig_evolucao.update_layout(xaxis_rangeslider_visible=False, showlegend=False)
+        st.plotly_chart(fig_evolucao, use_container_width=True)
+
     if not df.empty:
         # KPI Cards
         xp_total = df["XP Total"].sum()
@@ -295,6 +295,7 @@ if monstros_da_cat:
     prog = len(concluidos) / len(monstros_da_cat)
     st.progress(prog)
     st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
