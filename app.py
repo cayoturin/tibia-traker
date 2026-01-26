@@ -56,7 +56,7 @@ def save_hunt(log_text, location, level):
         minutes = (int(time_match.group(1)) * 60) + int(time_match.group(2)) if time_match else 0
         xp_h_real = (xp / minutes) * 60 if minutes > 0 else 0
 
-        new_row = [datetime.now().strftime("%Y-%m-%d %H:%M"), int(level), location, minutes, xp, int(xp_h_real), balance, supplies]
+        new_row = [datetime.now().strftime("%Y-%m-%d"), int(level), location, minutes, xp, int(xp_h_real), balance, supplies]
         return new_row
     except Exception as e:
         st.error(f"Erro ao ler log: {e}")
@@ -105,7 +105,6 @@ tab1, tab2, tab3, tab4 = st.tabs(["📊 Visão Geral", "📈 Evolução (Time Se
 
 # --- ABA 1: VISÃO GERAL (RESUMO) ---
 with tab1:
-    # --- Dentro da Tab 1 (HOME) ---
     if not df.empty:
         st.subheader("🚀 Evolução do Personagem")
         # Gráfico de área para dar peso visual ao crescimento
@@ -295,6 +294,7 @@ if monstros_da_cat:
     prog = len(concluidos) / len(monstros_da_cat)
     st.progress(prog)
     st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
