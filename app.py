@@ -269,31 +269,32 @@ with tab5:
         st.metric("🔥 Impacto na Hunt", f"{custo_hora:,.0f} gp/h", help="Subtraia isso do seu lucro por hora")
 
 # --- ABA 6: RASTREADOR DE BESTIARY ---
+with tab6:
+    import streamlit as st
+    import json
+    
+    # Função para carregar o arquivo
+    def load_bestiary():
+        with open('bestiary.json', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    
+    bestiario = load_bestiary()
+    
+    st.header("📜 Bestiários Completos")
+    
+    # Escolha da Categoria
+    cat = st.selectbox("Filtrar por Categoria", list(bestiario.keys()))
+    
+    # Multiselect com os monstros da categoria
+    monstros_da_cat = bestiario[cat]
+    concluidos = st.multiselect(f"Monstros de {cat} concluídos:", monstros_da_cat)
+    
+    # Barra de progresso da categoria
+    if monstros_da_cat:
+        prog = len(concluidos) / len(monstros_da_cat)
+        st.progress(prog)
+        st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
 
-import streamlit as st
-import json
-
-# Função para carregar o arquivo
-def load_bestiary():
-    with open('bestiary.json', 'r', encoding='utf-8') as f:
-        return json.load(f)
-
-bestiario = load_bestiary()
-
-st.header("📜 Bestiários Completos")
-
-# Escolha da Categoria
-cat = st.selectbox("Filtrar por Categoria", list(bestiario.keys()))
-
-# Multiselect com os monstros da categoria
-monstros_da_cat = bestiario[cat]
-concluidos = st.multiselect(f"Monstros de {cat} concluídos:", monstros_da_cat)
-
-# Barra de progresso da categoria
-if monstros_da_cat:
-    prog = len(concluidos) / len(monstros_da_cat)
-    st.progress(prog)
-    st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
 
 
 
