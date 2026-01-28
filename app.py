@@ -160,7 +160,7 @@ with tab1:
             horas_faltantes = xp_restante / media_xph if media_xph > 0 else 0
             m2.metric("Horas de Hunt Estimadas", f"{horas_faltantes:.1f}h")
     
-    st.caption(f"Faltam aproximadamente {int(horas_faltantes/2)} hunts de 2h para o objetivo.")
+        st.caption(f"Faltam aproximadamente {int(horas_faltantes/2)} hunts de 2h para o objetivo.")
         
         st.subheader("Últimas 5 Hunts")
         st.dataframe(df.tail(5).sort_values("Data", ascending=False), use_container_width=True, hide_index=True)
@@ -380,6 +380,7 @@ with tab6:
         prog = len(concluidos) / len(monstros_da_cat)
         st.progress(prog)
         st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
