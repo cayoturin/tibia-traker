@@ -106,67 +106,66 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Visão Geral", "📈 Evoluç
 # --- ABA 1: VISÃO GERAL (RESUMO) ---
 with tab1:
     if not df.empty:
+        # 1. Gráfico de Evolução
         st.subheader("🚀 Evolução do Personagem")
-        # Gráfico de área para dar peso visual ao crescimento
         fig_evolucao = px.area(df, x="Data", y="Level", 
                               title="Crescimento ao Longo do Tempo",
                               labels={'Level': 'Nível', 'Data': 'Data da Hunt'},
-                              color_discrete_sequence=['#00CC96']) # Verde MS
+                              color_discrete_sequence=['#00CC96'])
         
-        # Ajuste para o gráfico ficar limpo
         fig_evolucao.update_layout(xaxis_rangeslider_visible=False, showlegend=False)
         st.plotly_chart(fig_evolucao, use_container_width=True)
 
-    if not df.empty:
-        # KPI Cards
+        # 2. KPI Cards
         xp_total = df["XP Total"].sum()
         lucro_total = df["Lucro"].sum()
         horas_jogs = df["Tempo (min)"].sum() / 60
         
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Total XP Farmada", format_number(xp_total), help="Soma de todas as hunts")
-        c2.metric("Lucro Líquido", format_number(lucro_total), delta_color="normal")
+        c2.metric("Lucro Líquido", format_number(lucro_total))
         c3.metric("Horas Jogadas", f"{horas_jogs:.1f}h")
         c4.metric("Hunts Registradas", len(df))
 
-       # --- TRACKER DE META MANUAL ---
-    st.markdown("---")
-    st.subheader("🎯 Meta de Evolução")
-    
-    # 1. Definição da Meta (Sugestão: 600 - Explicarei o porquê abaixo)
-    META_LEVEL = 600
-    xp_meta = xp_for_level(META_LEVEL)
-    
-    col_meta1, col_meta2 = st.columns([1, 2])
-    
-    with col_meta1:
-        # Input manual da sua XP atual (pega no Char Pane do Tibia)
-        xp_atual = st.number_input("Sua XP Atual:", value=int(df["XP Total"].sum() if not df.empty else 0), step=100000)
+        # 3. Tracker de Meta Manual
+        st.markdown("---")
+        st.subheader("🎯 Meta de Evolução")
         
-    with col_meta2:
-        xp_restante = xp_meta - xp_atual
-        porcentagem = min(xp_atual / xp_meta, 1.0)
+        META_LEVEL = 600
+        xp_meta = xp_for_level(META_LEVEL)
         
-        st.write(f"**Caminho para o Level {META_LEVEL}**")
-        st.progress(porcentagem)
+        col_meta1, col_meta2 = st.columns([1, 2])
         
-        # Métricas de contagem regressiva
-        m1, m2 = st.columns(2)
-        m1.metric("XP Faltante", format_number(xp_restante))
-        
-        # Estimativa baseada na sua média de XP/h
-        if not df.empty:
+        with col_meta1:
+            # Pegando a XP total salva como valor padrão
+            xp_padrao = int(df["XP Total"].sum())
+            xp_atual = st.number_input("Sua XP Atual (conferir no jogo):", value=xp_padrao, step=100000)
+            
+        with col_meta2:
+            xp_restante = xp_meta - xp_atual
+            porcentagem = min(xp_atual / xp_meta, 1.0)
+            
+            st.write(f"**Caminho para o Level {META_LEVEL}**")
+            st.progress(porcentagem)
+            
+            m1, m2 = st.columns(2)
+            m1.metric("XP Faltante", format_number(xp_restante))
+            
             media_xph = df["XP/h Real"].mean()
-            horas_faltantes = xp_restante / media_xph if media_xph > 0 else 0
-            m2.metric("Horas de Hunt Estimadas", f"{horas_faltantes:.1f}h")
-    
-        st.caption(f"Faltam aproximadamente {int(horas_faltantes/2)} hunts de 2h para o objetivo.")
-        
-        st.subheader("Últimas 5 Hunts")
-        st.dataframe(df.tail(5).sort_values("Data", ascending=False), use_container_width=True, hide_index=True)
-    else:
-        st.warning("Sem dados. Adicione sua primeira hunt na barra lateral.")
+            if media_xph > 0:
+                horas_faltantes = xp_restante / media_xph
+                m2.metric("Horas de Hunt Estimadas", f"{horas_faltantes:.1f}h")
+                st.caption(f"Faltam aproximadamente {int(horas_faltantes/2)} hunts de 2h para o objetivo.")
 
+        # 4. Tabela de Hunts Recentes
+        st.markdown("---")
+        st.subheader("📜 Últimas 5 Hunts")
+        st.dataframe(df.tail(5).sort_values("Data", ascending=False), use_container_width=True, hide_index=True)
+
+    else:
+        # Esse else agora está alinhado corretamente com o PRIMEIRO 'if not df.empty'
+        st.warning("Sem dados. Adicione sua primeira hunt na barra lateral.")
+        
 # --- ABA 2: EVOLUÇÃO TEMPORAL (TIPO BOLSA DE VALORES) ---
 with tab2:
     if not df.empty:
@@ -380,6 +379,7 @@ with tab6:
         prog = len(concluidos) / len(monstros_da_cat)
         st.progress(prog)
         st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
