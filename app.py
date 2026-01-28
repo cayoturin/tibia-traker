@@ -129,10 +129,38 @@ with tab1:
         c3.metric("Horas Jogadas", f"{horas_jogs:.1f}h")
         c4.metric("Hunts Registradas", len(df))
 
-        # Barra de Progresso Lvl 400
-        xp_next = xp_for_level(400) - xp_for_level(current_lvl)
-        st.write(f"**Road to Level 400** (Faltam {format_number(xp_next)} XP)")
-        st.progress(min(xp_for_level(current_lvl)/xp_for_level(400), 1.0))
+       # --- TRACKER DE META MANUAL ---
+st.markdown("---")
+st.subheader("🎯 Meta de Evolução")
+
+# 1. Definição da Meta (Sugestão: 600 - Explicarei o porquê abaixo)
+META_LEVEL = 600
+xp_meta = xp_for_level(META_LEVEL)
+
+col_meta1, col_meta2 = st.columns([1, 2])
+
+with col_meta1:
+    # Input manual da sua XP atual (pega no Char Pane do Tibia)
+    xp_atual = st.number_input("Sua XP Atual:", value=int(df["XP Total"].sum() if not df.empty else 0), step=100000)
+    
+with col_meta2:
+    xp_restante = xp_meta - xp_atual
+    porcentagem = min(xp_atual / xp_meta, 1.0)
+    
+    st.write(f"**Caminho para o Level {META_LEVEL}**")
+    st.progress(porcentagem)
+    
+    # Métricas de contagem regressiva
+    m1, m2 = st.columns(2)
+    m1.metric("XP Faltante", format_number(xp_restante))
+    
+    # Estimativa baseada na sua média de XP/h
+    if not df.empty:
+        media_xph = df["XP/h Real"].mean()
+        horas_faltantes = xp_restante / media_xph if media_xph > 0 else 0
+        m2.metric("Horas de Hunt Estimadas", f"{horas_faltantes:.1f}h")
+
+st.caption(f"Faltam aproximadamente {int(horas_faltantes/2)} hunts de 2h para o objetivo.")
         
         st.subheader("Últimas 5 Hunts")
         st.dataframe(df.tail(5).sort_values("Data", ascending=False), use_container_width=True, hide_index=True)
@@ -352,6 +380,7 @@ with tab6:
         prog = len(concluidos) / len(monstros_da_cat)
         st.progress(prog)
         st.write(f"Você completou {len(concluidos)} de {len(monstros_da_cat)} nesta categoria.")
+
 
 
 
